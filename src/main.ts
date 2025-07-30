@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
-export async function bootstrap() {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   // Enable CORS
@@ -39,4 +39,5 @@ export async function bootstrap() {
     `📚 API Documentation available at: http://localhost:${port}/api`,
   );
 }
-bootstrap();
+
+export default bootstrap();
