@@ -96,3 +96,305 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Astro Gender Server
+
+A gender-inclusive astrology API built with NestJS that provides zodiac sign detection, personality descriptions, and forecasts for all 72 recognized gender identities.
+
+## 🌟 Features
+
+- **Zodiac Sign Detection**: Mathematical calculation based on birth date, time, and location
+- **Personality Descriptions**: AI-generated descriptions for each zodiac sign and gender combination
+- **Forecasts**: Time-based forecasts (daily, weekly, monthly, yearly) for all combinations
+- **Database Caching**: MongoDB storage to reduce API costs and improve performance
+- **Automated Updates**: Cron jobs to keep forecasts current and clean expired data
+- **Gender Inclusive**: Support for 72 different gender identities
+- **API Documentation**: Swagger/OpenAPI documentation
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- MongoDB (local or cloud instance)
+- OpenAI API key
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd astro-gender-server
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up environment variables:
+
+```bash
+cp env.example .env
+```
+
+Edit `.env` with your configuration:
+
+```env
+MONGODB_URI=mongodb://localhost:27017/astro-gender-server
+OPENAI_API_KEY=your_openai_api_key_here
+PORT=3000
+```
+
+4. Start the development server:
+
+```bash
+npm run start:dev
+```
+
+The API will be available at `http://localhost:3000`
+API documentation at `http://localhost:3000/api`
+
+## 📚 API Endpoints
+
+### 1. Detect Zodiac Sign
+
+**POST** `/astrology/detect_zodiac_sign`
+
+Detects zodiac sign based on birth information.
+
+**Request Body:**
+
+```json
+{
+  "location": "New York, NY",
+  "birthTime": "14:30",
+  "birthDate": "1990-05-15"
+}
+```
+
+**Response:**
+
+```json
+{
+  "zodiacSign": "Taurus",
+  "location": "New York, NY",
+  "birthTime": "14:30",
+  "birthDate": "1990-05-15",
+  "latitude": 40.7128,
+  "longitude": -74.006
+}
+```
+
+### 2. Get Personality Description
+
+**POST** `/astrology/get_sign_description`
+
+Retrieves personality description for a specific zodiac sign and gender.
+
+**Request Body:**
+
+```json
+{
+  "zodiacSign": "Taurus",
+  "gender": "non-binary"
+}
+```
+
+**Response:**
+
+```json
+{
+  "zodiacSign": "taurus",
+  "gender": "non-binary",
+  "description": "As a non-binary Taurus...",
+  "traits": {
+    "strengths": ["Patient", "Reliable", "Determined"],
+    "weaknesses": ["Stubborn", "Possessive"],
+    "compatibility": ["Cancer", "Virgo", "Capricorn"],
+    "career": ["Finance", "Agriculture", "Interior Design"],
+    "love": ["Loyal", "Affectionate", "Protective"]
+  },
+  "isGenerated": true,
+  "lastUpdated": "2024-01-15T10:30:00.000Z"
+}
+```
+
+### 3. Get Forecast
+
+**POST** `/astrology/get_sign_forecast`
+
+Retrieves forecast for a specific zodiac sign, gender, and timeframe.
+
+**Request Body:**
+
+```json
+{
+  "zodiacSign": "Taurus",
+  "gender": "non-binary",
+  "timeframe": "week"
+}
+```
+
+**Response:**
+
+```json
+{
+  "zodiacSign": "taurus",
+  "gender": "non-binary",
+  "timeframe": "week",
+  "forecast": "This week brings opportunities for...",
+  "details": {
+    "love": "Romantic connections may deepen...",
+    "career": "Professional growth is highlighted...",
+    "health": "Focus on physical well-being...",
+    "finance": "Financial decisions require careful consideration...",
+    "luck": "Fortune favors your patience..."
+  },
+  "validFrom": "2024-01-15T00:00:00.000Z",
+  "validUntil": "2024-01-22T00:00:00.000Z",
+  "isGenerated": true,
+  "lastUpdated": "2024-01-15T06:00:00.000Z"
+}
+```
+
+## 🗄️ Database Schema
+
+### Zodiac Sign Detection
+
+Stores birth information and calculated zodiac signs.
+
+### Personality Descriptions
+
+Caches AI-generated personality descriptions for each zodiac sign and gender combination.
+
+### Forecasts
+
+Stores time-based forecasts with validity periods and automatic cleanup.
+
+## ⏰ Cron Jobs
+
+The system includes automated tasks:
+
+- **Hourly**: Clean up expired forecasts
+- **Daily (6 AM)**: Update daily forecasts for all combinations
+- **Weekly (Monday 6 AM)**: Update weekly forecasts
+- **Monthly (1st 6 AM)**: Update monthly forecasts
+- **Yearly (Jan 1st 6 AM)**: Update yearly forecasts
+
+## 🏗️ Architecture
+
+### Components
+
+1. **ZodiacDetectionService**: Mathematical zodiac sign calculation
+2. **PersonalityDescriptionService**: Database caching and AI generation
+3. **ForecastService**: Time-based forecast management
+4. **OpenAIService**: AI content generation
+5. **CronService**: Automated database maintenance
+
+### Data Flow
+
+1. **Zodiac Detection**: Pure mathematical calculation
+2. **Personality/Forecast**: Check database → Generate if missing → Cache → Return
+
+### Gender Support
+
+The system supports 72 gender identities including:
+
+- Traditional: male, female
+- Non-binary identities: non-binary, genderfluid, agender, bigender
+- Cultural: two-spirit
+- Descriptive: gender creative, gender expansive, gender diverse
+- And many more...
+
+## 🔧 Configuration
+
+### Environment Variables
+
+| Variable         | Description               | Default                                         |
+| ---------------- | ------------------------- | ----------------------------------------------- |
+| `MONGODB_URI`    | MongoDB connection string | `mongodb://localhost:27017/astro-gender-server` |
+| `OPENAI_API_KEY` | OpenAI API key            | Required                                        |
+| `PORT`           | Server port               | `3000`                                          |
+
+### Supported Timeframes
+
+- `day`: Daily forecasts
+- `week`: Weekly forecasts
+- `month`: Monthly forecasts
+- `year`: Yearly forecasts
+
+## 🧪 Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## 📦 Production Deployment
+
+1. Build the application:
+
+```bash
+npm run build
+```
+
+2. Start production server:
+
+```bash
+npm run start:prod
+```
+
+3. Set up MongoDB indexes for optimal performance:
+
+```javascript
+// The application automatically creates indexes, but you can verify:
+db.personalitydescriptions.createIndex(
+  { zodiacSign: 1, gender: 1 },
+  { unique: true },
+);
+db.forecasts.createIndex({
+  zodiacSign: 1,
+  gender: 1,
+  timeframe: 1,
+  validFrom: 1,
+  validUntil: 1,
+});
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions:
+
+- Check the API documentation at `/api`
+- Review the logs for detailed error information
+- Ensure all environment variables are properly configured
+
+## 🔮 Future Enhancements
+
+- [ ] Geocoding service integration for better location handling
+- [ ] Rate limiting for OpenAI API calls
+- [ ] User authentication and personalization
+- [ ] Webhook notifications for forecast updates
+- [ ] Analytics and usage tracking
+- [ ] Multi-language support
